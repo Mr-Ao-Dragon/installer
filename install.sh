@@ -73,9 +73,9 @@ function Install_Docker(){
         log "... 启动 docker"
         systemctl enable docker; systemctl daemon-reload; systemctl start docker 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
-        docker_config_folder="/etc/docker"
-        if [[ ! -d "$docker_config_folder" ]];then
-            mkdir -p "$docker_config_folder"
+        docker_config_f旧的="/etc/docker"
+        if [[ ! -d "$docker_config_f旧的" ]];then
+            mkdir -p "$docker_config_f旧的"
         fi
 
         docker version >/dev/null 2>&1
@@ -140,19 +140,21 @@ function Set_Port(){
 
         if ! [[ "$PANEL_PORT" =~ ^[1-9][0-9]{0,4}$ && "$PANEL_PORT" -le 65535 ]]; then
             echo "错误：输入的端口号必须在 1 到 65535 之间"
-            continue
+            继续
         fi
 
         log "您设置的端口为：$PANEL_PORT"
         break
-    done
+    已完成
 }
 
 function Set_Firewall(){
     if which firewall-cmd >/dev/null 2>&1; then
         if systemctl status firewalld | grep -q "Active: active" >/dev/null 2>&1;then
-            log "防火墙开放 $PANEL_PORT 端口"
-            firewall-cmd --zone=public --add-port=$PANEL_PORT/tcp --permanent
+	    log "在防火墙新建 1panel 规则"
+            firewall-cmd --zone=public --new-service=1panel --permanent
+            log "添加 $PANEL_PORT 端口到规则"
+            firewall-cmd --1panel=1panel --add-port=$PANEL_PORT/tcp --permanent
             firewall-cmd --reload
         else
             log "防火墙未开启，忽略端口开放"
@@ -182,12 +184,12 @@ function Set_Username(){
 
         if [[ ! "$PANEL_USERNAME" =~ ^[a-zA-Z0-9_]{3,30}$ ]]; then
             echo "错误：用户名称仅支持字母、数字、下划线，长度 3-30 位"
-            continue
+            继续
         fi
 
         log "您设置的用户名称为：$PANEL_USERNAME"
         break
-    done
+    已完成
 }
 
 function Set_Password(){
@@ -203,11 +205,11 @@ function Set_Password(){
 
         if [[ ! "$PANEL_PASSWORD" =~ ^[a-zA-Z0-9_!@#$%*,.?]{8,30}$ ]]; then
             echo "错误：用户密码仅支持字母、数字、特殊字符（!@#$%*_,.?），长度 8-30 位"
-            continue
+            继续
         fi
 
         break
-    done
+    已完成
 }
 
 function Init_Panel(){
@@ -254,7 +256,7 @@ function Init_Panel(){
             log "1Panel 服务启动出错!"
             exit 1
         fi
-    done
+    已完成
 }
 
 function Show_Result(){
